@@ -29,7 +29,7 @@ public final class LocationTransport extends JavaPlugin  {
                 InventoryHelper.saveToFile(LocationTransportListener.gui, "gui_serializable.dat");
                 log.info(" ~~~~ serializeObject!!");
             }
-        }.runTaskTimer(this, 0L, 20L);
+        }.runTaskTimer(this, 0L, 7200L);
 
         LocationTransportListener transportListener = new LocationTransportListener(location, gui);
         // 注册事件监听器
