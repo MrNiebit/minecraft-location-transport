@@ -1,0 +1,11 @@
+name: locationTransport
+version: '${project.version}'
+main: cn.lacknb.locationtransport.LocationTransport
+api-version: 1.20
+author: git
+load: STARTUP
+commands:
+  waystone:
+    description: waystone give (给你一个物品)
+    permission: waystone.give
+    usage: /waystone
