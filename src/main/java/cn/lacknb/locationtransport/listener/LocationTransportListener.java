@@ -137,6 +137,13 @@ public class LocationTransportListener implements CommandExecutor, Listener {
                 return;
             }
             ItemStack dia = new ItemStack(Material.TOTEM_OF_UNDYING);
+            ItemMeta meta = dia.getItemMeta();
+            if (meta != null) {
+                ItemMeta itemMeta = event.getItemInHand().getItemMeta();
+                if (itemMeta != null) {
+                    meta.setDisplayName(itemMeta.getDisplayName());
+                }
+            }
             gui.addItem(dia);
             locationMap.put(index, LocationModel.build(block.hashCode(), block.getLocation().serialize()));
         }
