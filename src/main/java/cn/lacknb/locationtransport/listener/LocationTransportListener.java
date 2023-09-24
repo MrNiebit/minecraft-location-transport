@@ -1,8 +1,10 @@
 package cn.lacknb.locationtransport.listener;
 
+import cn.lacknb.locationtransport.LocationTransport;
 import cn.lacknb.locationtransport.mode.LocationModel;
 import com.google.common.collect.Maps;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -13,11 +15,14 @@ import org.bukkit.block.data.Waterlogged;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.conversations.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.block.BlockSpreadEvent;
+import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
@@ -26,6 +31,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.Map;
+import java.util.Random;
 import java.util.logging.Logger;
 
 /**
@@ -97,6 +103,12 @@ public class LocationTransportListener implements CommandExecutor, Listener {
     //     decreaseCount(event.getBlock());
     // }
 
+    @EventHandler
+    public void onBlockEntitySpawn(EntityChangeBlockEvent event) {
+        Block block = event.getBlock();
+        decreaseCount(block);
+    }
+
     private boolean inWater(Block block) {
         // 检查方块周围是否有水
         for (BlockFace face : BlockFace.values()) {
@@ -140,13 +152,21 @@ public class LocationTransportListener implements CommandExecutor, Listener {
             ItemMeta meta = dia.getItemMeta();
             if (meta != null) {
                 ItemMeta itemMeta = event.getItemInHand().getItemMeta();
-                if (itemMeta != null) {
-                    meta.setDisplayName(itemMeta.getDisplayName());
+                if (itemMeta != null && itemMeta.hasDisplayName()) {
+                    meta.setDisplayName(getRandomChatColor() + itemMeta.getDisplayName());
+                    dia.setItemMeta(meta);
                 }
             }
             gui.addItem(dia);
             locationMap.put(index, LocationModel.build(block.hashCode(), block.getLocation().serialize()));
         }
+    }
+
+    private ChatColor getRandomChatColor() {
+        ChatColor[] colors = ChatColor.values();
+        Random random = new Random();
+        int index = random.nextInt(colors.length);
+        return colors[index];
     }
 
     private String formatLocation(Location location) {
